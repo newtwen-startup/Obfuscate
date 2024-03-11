@@ -2,10 +2,13 @@ cmake_minimum_required(VERSION 3.14)
 
 project(Obfuscate)
 
-option(GENERATE_TESTS "GENERATE_TESTS" ON)
+option(GENERATE_TESTS "GENERATE_TESTS" OFF)
+option(BLOAT_TEST "Use bloat test" OFF)
 
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
+	set(CMAKE_CXX_STANDARD 20)
+	set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif()
 
 # Set unix platforms to output executables to Release and Debug folders (Windows does by default)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/Release)
@@ -35,6 +38,10 @@ if (GENERATE_TESTS)
 endif()
 
 # Bloat test
+if (BLOAT_TEST)
 add_executable(test_bloat_on obfuscate.h test_bloat.cpp)
 add_executable(test_bloat_off obfuscate.h test_bloat.cpp)
 target_compile_definitions(test_bloat_on PRIVATE USE_AY_OBFUSCATE=1)
+endif()
+
+add_library(Obfuscate INTERFACE Obfuscate.h)
